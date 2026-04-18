@@ -61,14 +61,7 @@ def checkout_flow(
 
     final_total = apply_coupon(result, coupon) if coupon else result.total
 
-    return {
-        "status": "success",
-        "order_id": result.order_id,
-        "subtotal": result.total,
-        "coupon_applied": coupon or None,
-        "final_total": final_total,
-        "customer": user.username,
-    }
+    
 
 
 def express_checkout(user: User, product: Product) -> dict:

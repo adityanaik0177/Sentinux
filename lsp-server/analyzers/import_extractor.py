@@ -71,7 +71,8 @@ class ExtractionResult:
     file_path: str
     imports: list[ImportStatement] = field(default_factory=list)
     # Top-level symbols defined in this file (functions + classes)
-    defined_symbols: list[str] = field(default_factory=list)
+    # The dictionary maps symbol_name -> symbol_body_text
+    defined_symbols: dict[str, str] = field(default_factory=dict)
     parse_error: Optional[str] = None
 
 
@@ -102,8 +103,8 @@ _FROM_IMPORT_PATTERN = """
 
 # Matches function and class definitions (Producers)
 _DEFINITIONS_PATTERN = """
-(function_definition name: (identifier) @func_name)
-(class_definition    name: (identifier) @class_name)
+(function_definition name: (identifier) @func_name) @func_body
+(class_definition    name: (identifier) @class_name) @class_body
 """
 
 
@@ -241,12 +242,28 @@ class ImportExtractor:
 
         return list(aggregated.values())
 
-    def _extract_definitions(self, root: Node) -> list[str]:
-        """Return all function/class names defined anywhere in this file."""
+    def _extract_definitions(self, root: Node) -> dict[str, str]:
+        """Return a mapping of function/class names -> their full source code body."""
         caps = self._captures(self._q_defs, root)
-        names: list[str] = []
-        for key in ("func_name", "class_name"):
-            for node in caps.get(key, []):
-                if node.text:
-                    names.append(node.text.decode("utf-8"))
-        return names
+        
+        # We need to map the name node to its corresponding body node.
+        # tree-sitter captures them in pairs if they are part of the same match.
+        symbols: dict[str, str] = {}
+        
+        func_names = caps.get("func_name", [])
+        func_bodies = caps.get("func_body", [])
+        for name_node, body_node in zip(func_names, func_bodies):
+            if name_node.text and body_node.text:
+                name_str = name_node.text.decode("utf-8")
+                body_str = body_node.text.decode("utf-8")
+                symbols[name_str] = body_str
+
+        class_names = caps.get("class_name", [])
+        class_bodies = caps.get("class_body", [])
+        for name_node, body_node in zip(class_names, class_bodies):
+            if name_node.text and body_node.text:
+                name_str = name_node.text.decode("utf-8")
+                body_str = body_node.text.decode("utf-8")
+                symbols[name_str] = body_str
+                
+        return symbols

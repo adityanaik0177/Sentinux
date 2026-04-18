@@ -38,10 +38,17 @@ class FileRole:
     file_path: str
 
     # Symbols (functions / classes) this file defines → it is a Producer
+    # Stored as just the names to keep existing logic working
     exported_symbols: list[str] = field(default_factory=list)
+    
+    # Store the actual bodies for AI smells
+    symbol_bodies: dict[str, str] = field(default_factory=dict)
 
     # Modules this file imports from → it is a Consumer
     imported_modules: list[str] = field(default_factory=list)
+    
+    # Specific names this file imports
+    imported_names: list[str] = field(default_factory=list)
 
     @property
     def is_producer(self) -> bool:
@@ -111,10 +118,16 @@ class DependencyGraph:
         """
         fpath = result.file_path
 
+        imported_names = []
+        for imp in result.imports:
+            imported_names.extend(imp.names)
+
         role = FileRole(
             file_path=fpath,
-            exported_symbols=result.defined_symbols,
+            exported_symbols=list(result.defined_symbols.keys()),
+            symbol_bodies=result.defined_symbols,
             imported_modules=[imp.module for imp in result.imports],
+            imported_names=imported_names,
         )
         self._roles[fpath] = role
 
@@ -172,6 +185,25 @@ class DependencyGraph:
                     break  # one match per file is enough
 
         return consumers
+
+    def find_dead_code_in_workspace(self) -> list[dict]:
+        """
+        Scans all known files for defined symbols that are never imported 
+        anywhere in the entire workspace.
+        """
+        all_imported_names = set()
+        for role in self._roles.values():
+            all_imported_names.update(role.imported_names)
+            
+        dead_code = []
+        for fpath, role in self._roles.items():
+            for symbol in role.exported_symbols:
+                if symbol not in all_imported_names:
+                    dead_code.append({
+                        "file": fpath,
+                        "symbol": symbol
+                    })
+        return dead_code
 
     def freshness_score(self, file_path: str) -> float:
         """

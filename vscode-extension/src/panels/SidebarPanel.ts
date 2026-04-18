@@ -107,6 +107,20 @@ export class SidebarPanel implements vscode.WebviewViewProvider {
           }
           break
         }
+
+        case 'requestHealthSmells': {
+          if (!this._client) return
+          try {
+            const smells = await this._client.sendRequest('workspace/executeCommand', {
+              command: 'nexusSentinel/getHealthSmells',
+              arguments: [],
+            })
+            this.postMessage({ type: 'healthSmells', payload: smells })
+          } catch (err: any) {
+            this.postMessage({ type: 'error', message: err.message })
+          }
+          break
+        }
       }
     })
   }

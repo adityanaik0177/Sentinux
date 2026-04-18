@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import logging
 import sys
+import threading
 from pathlib import Path
 from typing import Optional
 from urllib.parse import unquote, urlparse
@@ -51,6 +52,7 @@ from lsprotocol.types import (
 from analyzers.blast_radius import make_engine, BlastRadiusReport
 from analyzers.import_extractor import ExtractionResult
 from analyzers.crawler import WorkspaceCrawler, FreshnessCalculator
+from analyzers.gemini_service import GeminiService
 
 # ---------------------------------------------------------------------------
 # Logging setup
@@ -75,6 +77,11 @@ server = LanguageServer(
 # ---------------------------------------------------------------------------
 graph, extractor, calculator = make_engine()
 freshness_calc = FreshnessCalculator(graph)
+gemini = GeminiService()
+
+# In-memory storage for discovered duplicate smells
+# Format: list of dicts with keys: file_path, function_name, duplicates (list), suggestion (str)
+duplicate_smells = []
 
 
 # ---------------------------------------------------------------------------
@@ -251,7 +258,49 @@ def did_save(ls: LanguageServer, params: DidSaveTextDocumentParams) -> None:
     index_document(doc.uri, fresh_source)
     logger.info("didSave: %s re-indexed from disk.", Path(file_path).name)
 
+    # Push blast radius instantly (computationally very fast)
     push_blast_radius_diagnostics(doc.uri)
+
+    # Phase 5: Generate and verify embeddings (Duplicate Check) - Move to background thread
+    def _run_ml_diagnostics():
+        role = graph.get_role(file_path)
+        if not role:
+            return
+            
+        logger.info(f"Background ML Job started for {Path(file_path).name}")
+        for func_name, func_body in role.symbol_bodies.items():
+            emb = gemini.generate_embedding(func_body)
+            if emb:
+                # Upsert into supabase
+                gemini.upsert_function_embedding(file_path, func_name, func_body, emb)
+                
+                # Check for duplicates
+                dupes = gemini.find_duplicates(emb)
+                # Filter out itself
+                real_dupes = [d for d in dupes if not (d['file_path'] == file_path and d['function_name'] == func_name)]
+                
+                if real_dupes:
+                    logger.warning(f"Duplicate found for {func_name} in {Path(file_path).name}")
+                    # Get refactoring suggestion based on the best duplicate
+                    best_dupe = real_dupes[0]
+                    suggestion = gemini.generate_refactoring_suggestion(func_body, best_dupe['content'])
+                    
+                    # Store smell
+                    smell = {
+                        "type": "duplicate",
+                        "file": file_path,
+                        "function_name": func_name,
+                        "duplicates": real_dupes,
+                        "suggestion": suggestion
+                    }
+                    # Keep latest duplicate smells
+                    existing_idx = next((i for i, s in enumerate(duplicate_smells) if s["file"] == file_path and s["function_name"] == func_name), -1)
+                    if existing_idx >= 0:
+                        duplicate_smells[existing_idx] = smell
+                    else:
+                        duplicate_smells.append(smell)
+
+    threading.Thread(target=_run_ml_diagnostics, daemon=True).start()
 
 
 @server.feature(TEXT_DOCUMENT_DID_CLOSE)
@@ -368,6 +417,30 @@ def cmd_get_workspace_graph(ls: LanguageServer, args: list) -> dict:
                     break
 
     return {"nodes": nodes, "edges": edges}
+
+
+@server.command("nexusSentinel/getHealthSmells")
+def cmd_get_health_smells(ls: LanguageServer, args: list) -> dict:
+    """
+    Return all known Health Smells for the workspace.
+    Includes: Dead Code, Duplicate Code.
+    """
+    dead_code_raw = graph.find_dead_code_in_workspace()
+    
+    # Format dead code
+    dead_code_smells = []
+    for dc in dead_code_raw:
+        dead_code_smells.append({
+            "type": "dead_code",
+            "file": dc["file"],
+            "function_name": dc["symbol"],
+            "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        })
+        
+    return {
+        "dead_code": dead_code_smells,
+        "duplicates": duplicate_smells
+    }
 
 
 # ---------------------------------------------------------------------------

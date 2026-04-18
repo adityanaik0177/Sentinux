@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import FreshnessMeter from './components/FreshnessMeter'
 import BlastRadiusReport from './components/BlastRadiusReport'
 import DependencyGraph from './components/DependencyGraph'
-import { Shield, GitBranch, Zap } from 'lucide-react'
+import HealthDashboard from './components/HealthDashboard'
+import { Shield, GitBranch, Zap, Activity } from 'lucide-react'
 
 // acquireVsCodeApi is injected by VS Code into the webview global scope.
 // When running in a browser (dev mode), we fall back to a no-op stub.
@@ -17,6 +18,7 @@ const vscode = (() => {
 
 const TABS = [
   { id: 'pulse',  label: 'Pulse',  Icon: Zap },
+  { id: 'health', label: 'Health', Icon: Activity },
   { id: 'graph',  label: 'Graph',  Icon: GitBranch },
 ]
 
@@ -25,6 +27,8 @@ export default function App() {
   const [blastReport, setBlastReport] = useState(null)
   const [graphData, setGraphData]     = useState(null)
   const [graphLoading, setGraphLoading] = useState(false)
+  const [healthSmells, setHealthSmells] = useState(null)
+  const [healthLoading, setHealthLoading] = useState(false)
   const [mode, setMode]               = useState('guardian')
   const [lspReady, setLspReady]       = useState(false)
 
@@ -40,6 +44,8 @@ export default function App() {
           vscode?.postMessage({ type: 'requestGraph' })
           // Also request blast radius for whatever file is active
           vscode?.postMessage({ type: 'requestActiveFilePulse' })
+          // Request health smells 
+          vscode?.postMessage({ type: 'requestHealthSmells' })
           break
         case 'blastRadiusReport':
           setBlastReport(msg.payload)
@@ -47,6 +53,10 @@ export default function App() {
         case 'workspaceGraph':
           setGraphData(msg.payload)
           setGraphLoading(false)
+          break
+        case 'healthSmells':
+          setHealthSmells(msg.payload)
+          setHealthLoading(false)
           break
       }
     }
@@ -60,6 +70,12 @@ export default function App() {
     setTab('graph')
     setGraphLoading(true)
     vscode?.postMessage({ type: 'requestGraph' })
+  }, [])
+
+  const requestHealth = useCallback(() => {
+    setTab('health')
+    setHealthLoading(true)
+    vscode?.postMessage({ type: 'requestHealthSmells' })
   }, [])
 
   // ── Freshness score from blast report ─────────────────────────────────────
@@ -103,7 +119,9 @@ export default function App() {
         {TABS.map(({ id, label, Icon }) => (
           <button
             key={id}
-            onClick={id === 'graph' ? requestGraph : () => setTab(id)}
+            onClick={
+              id === 'graph' ? requestGraph : id === 'health' ? requestHealth : () => setTab(id)
+            }
             style={{
               flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
               padding: '5px 8px', border: 'none', borderRadius: 6,
@@ -126,6 +144,14 @@ export default function App() {
           <div className="ns-scroll ns-fade-in" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <FreshnessMeter score={freshnessScore} file={blastReport?.file} />
             <BlastRadiusReport report={blastReport} />
+          </div>
+        )}
+        {tab === 'health' && (
+          <div className="ns-scroll ns-fade-in" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {healthLoading && !healthSmells && (
+              <div style={{ textAlign: 'center', padding: 20, color: 'var(--ns-text-dim)', fontSize: '0.7rem' }}>Scanning architecture...</div>
+            )}
+            <HealthDashboard smells={healthSmells} />
           </div>
         )}
         {tab === 'graph' && (

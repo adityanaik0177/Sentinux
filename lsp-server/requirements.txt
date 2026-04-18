@@ -2,6 +2,9 @@
 
 # Language Server Protocol framework
 pygls==1.3.1
+google-generativeai>=0.4.1
+supabase==2.4.0
+python-dotenv>=1.0.0
 
 # Tree-sitter core + Python grammar (pre-built wheels for Python 3.14 Windows)
 tree-sitter==0.25.2
