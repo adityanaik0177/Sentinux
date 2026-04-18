@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
+  <!-- Shield outline -->
+  <path
+    d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"
+    fill="#7c3aed"
+    stroke="#a78bfa"
+    stroke-width="0.5"
+    opacity="0.9"
+  />
+  <!-- Eye outer ring -->
+  <ellipse cx="12" cy="12" rx="4" ry="3" fill="none" stroke="#e879f9" stroke-width="1"/>
+  <!-- Pupil -->
+  <circle cx="12" cy="12" r="1.5" fill="#e879f9"/>
+  <!-- Pulse ring -->
+  <ellipse cx="12" cy="12" rx="4" ry="3" fill="none" stroke="#c026d3" stroke-width="0.4" opacity="0.5"/>
+</svg>

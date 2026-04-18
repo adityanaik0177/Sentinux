@@ -1,0 +1,70 @@
+# ============================================================
+# Nexus-Sentinel — .gitignore
+# ============================================================
+
+# ── Python ───────────────────────────────────────────────────
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+*.whl
+
+# Python test/coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ── Node / npm ────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# ── Vite / Build outputs ──────────────────────────────────────
+# vscode-extension compiled TypeScript output
+vscode-extension/out/
+# webview Vite bundle (built from webview-ui/src → vscode-extension/dist)
+vscode-extension/dist/
+# web-gate Vite bundle
+web-gate/dist/
+
+# ── Environment / Secrets ─────────────────────────────────────
+# NEVER commit real credentials or API keys
+.env
+.env.local
+.env.*.local
+.env.production
+# Keep the template — others need to know what vars are required
+!.env.example
+
+# ── VS Code Extension ─────────────────────────────────────────
+*.vsix
+
+# ── OS / Editor junk ─────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/

@@ -1,0 +1,86 @@
+{
+  "name": "nexus-sentinel",
+  "displayName": "Nexus-Sentinel: Architectural Guardian",
+  "description": "A self-healing, read-only architectural guardian that calculates the Blast Radius of code changes before they break your system.",
+  "version": "0.1.0",
+  "publisher": "sentinux",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Visualization",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:python"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "nexus-sentinel",
+          "title": "Nexus Sentinel",
+          "icon": "media/sentinel-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "nexus-sentinel": [
+        {
+          "type": "webview",
+          "id": "nexusSentinel.pulseView",
+          "name": "Pulse Dashboard"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "nexusSentinel.startServer",
+        "title": "Nexus-Sentinel: Start LSP Brain"
+      },
+      {
+        "command": "nexusSentinel.showBlastRadius",
+        "title": "Nexus-Sentinel: Show Blast Radius Report"
+      }
+    ],
+    "configuration": {
+      "title": "Nexus-Sentinel",
+      "properties": {
+        "nexusSentinel.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to the lsp-server/server.py file."
+        },
+        "nexusSentinel.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Path to the Python interpreter for the LSP Brain."
+        },
+        "nexusSentinel.pat": {
+          "type": "string",
+          "default": "",
+          "description": "Personal Access Token issued from the Nexus-Sentinel Web Gate."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0"
+  }
+}
