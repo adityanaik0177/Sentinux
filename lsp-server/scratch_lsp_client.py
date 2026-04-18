@@ -43,18 +43,34 @@ def main():
         )
         
         # 1. Initialize
+        test_workspace_dir = os.path.abspath(os.path.join(os.getcwd(), '..', 'test-workspace'))
         init_msg = {
             "jsonrpc": "2.0",
             "id": 1,
             "method": "initialize",
             "params": {
                 "processId": os.getpid(),
-                "rootUri": f"file:///{os.getcwd()}",
+                "rootUri": f"file:///{test_workspace_dir.replace(os.sep, '/')}",
                 "capabilities": {}
             }
         }
         write_lsp_message(proc, f, init_msg)
         read_lsp_message(proc, f)
+        
+        # Mock opening a file completely triggers the workspace graph build initially
+        open_msg = {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+                "textDocument": {
+                    "uri": f"file:///{test_workspace_dir.replace(os.sep, '/')}/models.py",
+                    "languageId": "python",
+                    "version": 1,
+                    "text": "def stub(): pass"
+                }
+            }
+        }
+        write_lsp_message(proc, f, open_msg)
         
         # 2. Get Health Smells
         smells_msg = {

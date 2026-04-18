@@ -4,8 +4,8 @@ SENT: {
   "id": 1,
   "method": "initialize",
   "params": {
-    "processId": 26664,
-    "rootUri": "file:///C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server",
+    "processId": 19112,
+    "rootUri": "file:///C:/Users/vedan/OneDrive/Desktop/Sentinux2/test-workspace",
     "capabilities": {}
   }
 }
@@ -45,6 +45,19 @@ RECV: {
 
 SENT: {
   "jsonrpc": "2.0",
+  "method": "textDocument/didOpen",
+  "params": {
+    "textDocument": {
+      "uri": "file:///C:/Users/vedan/OneDrive/Desktop/Sentinux2/test-workspace/models.py",
+      "languageId": "python",
+      "version": 1,
+      "text": "def stub(): pass"
+    }
+  }
+}
+
+SENT: {
+  "jsonrpc": "2.0",
   "id": 2,
   "method": "workspace/executeCommand",
   "params": {
@@ -60,345 +73,285 @@ RECV: {
     "dead_code": [
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
+        "function_name": "handle_get_user",
+        "suggestion": "Dead export: `handle_get_user` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
+        "function_name": "handle_migrate",
+        "suggestion": "Caution: `handle_migrate` may be infrastructure setup code. Verify it is truly unused before removing."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
+        "function_name": "handle_add_to_cart",
+        "suggestion": "Dead export: `handle_add_to_cart` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
+        "function_name": "handle_get_product",
+        "suggestion": "Dead export: `handle_get_product` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
+        "function_name": "dispatch",
+        "suggestion": "Likely dead handler: `dispatch` is never registered anywhere. Safe to remove if no dynamic dispatch calls it."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\main.py",
+        "function_name": "take_order",
+        "suggestion": "Dead export: `take_order` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\main.py",
+        "function_name": "run_system",
+        "suggestion": "Dead export: `run_system` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\main.py",
+        "function_name": "print_final_bill",
+        "suggestion": "Dead export: `print_final_bill` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\menu.py",
         "function_name": "__init__",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "suggestion": "Caution: `__init__` may be infrastructure setup code. Verify it is truly unused before removing."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "role_label",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\menu.py",
+        "function_name": "unused_admin_price_override",
+        "suggestion": "Dead export: `unused_admin_price_override` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "is_empty",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\payment.py",
+        "function_name": "generate_customer_receipt",
+        "suggestion": "Dead export: `generate_customer_receipt` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "all_roles",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "delete",
+        "suggestion": "Dead export: `delete` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "freshness_score",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "__init__",
+        "suggestion": "Caution: `__init__` may be infrastructure setup code. Verify it is truly unused before removing."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "calculate",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "connect",
+        "suggestion": "Dead export: `connect` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "_build_diagnostic",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "is_alive",
+        "suggestion": "Dead export: `is_alive` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "consumer_count",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "disconnect",
+        "suggestion": "Dead export: `disconnect` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "is_producer",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "from_table",
+        "suggestion": "Dead export: `from_table` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "remove_file",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "where",
+        "suggestion": "Dead export: `where` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "get_role",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "limit",
+        "suggestion": "Dead export: `limit` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "update_file",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "find_by_id",
+        "suggestion": "Dead export: `find_by_id` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "is_consumer",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "save",
+        "suggestion": "Dead export: `save` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "find_dead_code_in_workspace",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "build",
+        "suggestion": "Dead export: `build` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "consumers_of",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "find_by_id",
+        "suggestion": "Dead export: `find_by_id` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "_dotted_path",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "__init__",
+        "suggestion": "Caution: `__init__` may be infrastructure setup code. Verify it is truly unused before removing."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "_find_import_line",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\blast_radius.py",
-        "function_name": "FileRole",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
-        "function_name": "crawl",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
         "function_name": "to_dict",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "suggestion": "Dead export: `to_dict` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "is_in_stock",
+        "suggestion": "Dead export: `is_in_stock` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "deactivate",
+        "suggestion": "Dead export: `deactivate` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "apply_discount",
+        "suggestion": "Dead export: `apply_discount` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "save",
+        "suggestion": "Dead export: `save` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "subtotal",
+        "suggestion": "Dead export: `subtotal` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "delete",
+        "suggestion": "Dead export: `delete` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "UserRepository",
+        "suggestion": "Dead export: `UserRepository` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\notifications.py",
+        "function_name": "send_order_confirmation",
+        "suggestion": "Dead export: `send_order_confirmation` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\notifications.py",
+        "function_name": "send_shipping_update",
+        "suggestion": "Dead export: `send_shipping_update` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\notifications.py",
+        "function_name": "broadcast_promo",
+        "suggestion": "Dead export: `broadcast_promo` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\checkout.py",
+        "function_name": "apply_coupon",
+        "suggestion": "Dead export: `apply_coupon` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\checkout.py",
+        "function_name": "express_checkout",
+        "suggestion": "Dead export: `express_checkout` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\checkout.py",
+        "function_name": "checkout_flow",
+        "suggestion": "Dead export: `checkout_flow` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\processor.py",
         "function_name": "__init__",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "suggestion": "Caution: `__init__` may be infrastructure setup code. Verify it is truly unused before removing."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
-        "function_name": "to_json",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\processor.py",
+        "function_name": "add_item",
+        "suggestion": "Dead export: `add_item` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
-        "function_name": "_collect_python_files",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\processor.py",
+        "function_name": "to_dict",
+        "suggestion": "Dead export: `to_dict` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
-        "function_name": "score_for",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\processor.py",
+        "function_name": "validate",
+        "suggestion": "Dead export: `validate` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
-        "function_name": "NodeData",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\processor.py",
+        "function_name": "submit",
+        "suggestion": "Dead export: `submit` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
-        "function_name": "WorkspaceGraph",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\reports.py",
+        "function_name": "generate_user_report",
+        "suggestion": "Dead export: `generate_user_report` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\crawler.py",
-        "function_name": "EdgeData",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\reports.py",
+        "function_name": "run_daily_digest",
+        "suggestion": "Dead export: `run_daily_digest` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\gemini_service.py",
-        "function_name": "__init__",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\reports.py",
+        "function_name": "generate_sales_report",
+        "suggestion": "Dead export: `generate_sales_report` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\gemini_service.py",
-        "function_name": "find_duplicates",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\gemini_service.py",
-        "function_name": "generate_embedding",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\gemini_service.py",
-        "function_name": "generate_refactoring_suggestion",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\gemini_service.py",
-        "function_name": "upsert_function_embedding",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "_extract_from_imports",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "__repr__",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "extract_from_source",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "_captures",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "__init__",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "_extract_definitions",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "extract_from_file",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "_extract_bare_imports",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\analyzers\\import_extractor.py",
-        "function_name": "ImportStatement",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\scratch_lsp_client.py",
-        "function_name": "read_lsp_message",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\scratch_lsp_client.py",
-        "function_name": "main",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\scratch_lsp_client.py",
-        "function_name": "write_lsp_message",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "did_change",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "cmd_get_health_smells",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "uri_to_path",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "on_initialize",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "index_document",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "push_blast_radius_diagnostics",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "did_open",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "did_close",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "cmd_get_workspace_graph",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "did_save",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "clear_diagnostics",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\server.py",
-        "function_name": "cmd_get_blast_radius",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\lsp-server\\test_phase1.py",
-        "function_name": "test",
-        "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+        "file": "C:/Users/vedan/OneDrive/Desktop/Sentinux2/test-workspace/models.py",
+        "function_name": "stub",
+        "suggestion": "Dead export: `stub` is defined and exported but never imported. Delete if no external consumers exist."
       }
     ],
     "duplicates": []

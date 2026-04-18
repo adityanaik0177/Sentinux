@@ -82,6 +82,7 @@ gemini = GeminiService()
 # In-memory storage for discovered duplicate smells
 # Format: list of dicts with keys: file_path, function_name, duplicates (list), suggestion (str)
 duplicate_smells = []
+ai_dead_code_cache = {}
 
 
 # ---------------------------------------------------------------------------
@@ -193,6 +194,29 @@ def on_initialize(ls: LanguageServer, params: InitializeParams) -> None:
                 ws_graph.total_files,
                 ws_graph.avg_freshness,
             )
+            
+            # Seed Dead Code AI suggestions in a background daemon
+            def _warmup_dead_code_ai():
+                logger.info("Warming up Dead Code AI cache from Gemini using BULK generation...")
+                bulk_funcs = {}
+                for dc in graph.find_dead_code_in_workspace():
+                    fpath = dc["file"]
+                    fname = dc["symbol"]
+                    ckey = f"{fpath}::{fname}"
+                    if ckey not in ai_dead_code_cache:
+                        dc_role = graph.get_role(fpath)
+                        if dc_role and fname in dc_role.symbol_bodies:
+                            bulk_funcs[ckey] = { "name": fname, "code": dc_role.symbol_bodies[fname] }
+                
+                if bulk_funcs:
+                    logger.info(f"Sending bulk AI prompt for {len(bulk_funcs)} dead code items...")
+                    results = gemini.generate_bulk_dead_code_suggestions(bulk_funcs)
+                    for ckey, sugg in results.items():
+                        ai_dead_code_cache[ckey] = sugg
+                    logger.info("Bulk generation complete.")
+                    
+            threading.Thread(target=_warmup_dead_code_ai, daemon=True).start()
+
         except Exception as exc:
             logger.warning("Startup crawl failed: %s", exc)
 
@@ -261,44 +285,105 @@ def did_save(ls: LanguageServer, params: DidSaveTextDocumentParams) -> None:
     # Push blast radius instantly (computationally very fast)
     push_blast_radius_diagnostics(doc.uri)
 
-    # Phase 5: Generate and verify embeddings (Duplicate Check) - Move to background thread
+    # ── Phase 5: Batched ML pipeline ──────────────────────────────────────
     def _run_ml_diagnostics():
         role = graph.get_role(file_path)
-        if not role:
+        if not role or not role.symbol_bodies:
             return
-            
-        logger.info(f"Background ML Job started for {Path(file_path).name}")
-        for func_name, func_body in role.symbol_bodies.items():
-            emb = gemini.generate_embedding(func_body)
-            if emb:
-                # Upsert into supabase
-                gemini.upsert_function_embedding(file_path, func_name, func_body, emb)
-                
-                # Check for duplicates
-                dupes = gemini.find_duplicates(emb)
-                # Filter out itself
-                real_dupes = [d for d in dupes if not (d['file_path'] == file_path and d['function_name'] == func_name)]
-                
-                if real_dupes:
-                    logger.warning(f"Duplicate found for {func_name} in {Path(file_path).name}")
-                    # Get refactoring suggestion based on the best duplicate
-                    best_dupe = real_dupes[0]
-                    suggestion = gemini.generate_refactoring_suggestion(func_body, best_dupe['content'])
-                    
-                    # Store smell
-                    smell = {
-                        "type": "duplicate",
-                        "file": file_path,
-                        "function_name": func_name,
-                        "duplicates": real_dupes,
-                        "suggestion": suggestion
-                    }
-                    # Keep latest duplicate smells
-                    existing_idx = next((i for i, s in enumerate(duplicate_smells) if s["file"] == file_path and s["function_name"] == func_name), -1)
-                    if existing_idx >= 0:
-                        duplicate_smells[existing_idx] = smell
-                    else:
-                        duplicate_smells.append(smell)
+
+        bodies = role.symbol_bodies          # { func_name: code }
+        names  = list(bodies.keys())
+        codes  = list(bodies.values())
+
+        logger.info(
+            f"ML pipeline: {len(names)} function(s) in {Path(file_path).name}"
+        )
+
+        # ── Step 1: ONE batch embedding call for all functions ─────────────
+        embeddings = gemini.generate_batch_embeddings(codes)   # single API call
+        logger.info("Step 1 done: batch embeddings received.")
+
+        # ── Step 2: Upsert all embeddings + run duplicate queries in parallel
+        items_for_dup = []
+        for func_name, code, emb in zip(names, codes, embeddings):
+            if emb is None:
+                continue
+            gemini.upsert_function_embedding(file_path, func_name, code, emb)
+            items_for_dup.append((file_path, func_name, emb))
+
+        # Parallel Supabase queries (one thread per function, capped at MAX_WORKERS)
+        dup_results = gemini.find_duplicates_batch(items_for_dup)
+        logger.info(f"Step 2 done: {len(dup_results)} duplicate results.")
+
+        # ── Step 3: Collect ALL (func, best_dup) pairs that need refactoring ─
+        pairs_for_ai: dict = {}   # { f"{func_name}" -> (my_code, dup_code) }
+        pending_smells = []       # hold smell dicts until AI fills suggestions
+
+        dead_set = {
+            f"{dc['file']}::{dc['symbol']}"
+            for dc in graph.find_dead_code_in_workspace()
+        }
+
+        for func_name, code in zip(names, codes):
+            ckey = f"{file_path}::{func_name}"
+
+            # Dead code AI suggestion (collected for bulk call)
+            if ckey in dead_set and ckey not in ai_dead_code_cache:
+                ai_dead_code_cache[ckey] = "__pending__"   # placeholder
+
+            # Duplicate suggestion
+            real_dupes = dup_results.get(ckey, [])
+            if real_dupes:
+                best = real_dupes[0]
+                pairs_for_ai[func_name] = (code, best.get('content', ''))
+                pending_smells.append({
+                    "type": "duplicate",
+                    "file": file_path,
+                    "function_name": func_name,
+                    "duplicates": real_dupes,
+                    "suggestion": "__pending__",   # filled below
+                    "_key": func_name,
+                })
+
+        # ── Step 4: ONE bulk Gemini call for all refactoring suggestions ──
+        if pairs_for_ai:
+            logger.info(f"Step 3: bulk refactoring for {len(pairs_for_ai)} pair(s)...")
+            sugg_map = gemini.generate_bulk_refactoring_suggestions(pairs_for_ai)
+            logger.info("Step 3 done: refactoring suggestions received.")
+        else:
+            sugg_map = {}
+
+        # ── Step 4b: ONE bulk Gemini call for pending dead code ───────────
+        pending_dead = {
+            ckey: {"name": ckey.split("::")[-1], "code": bodies.get(ckey.split("::")[-1], "")}
+            for ckey in list(ai_dead_code_cache)
+            if ai_dead_code_cache[ckey] == "__pending__"
+            and ckey.startswith(file_path)
+        }
+        if pending_dead:
+            logger.info(f"Step 4: bulk dead code AI for {len(pending_dead)} symbol(s)...")
+            dead_sugg_map = gemini.generate_bulk_dead_code_suggestions(pending_dead)
+            ai_dead_code_cache.update(dead_sugg_map)
+            logger.info("Step 4 done: dead code suggestions received.")
+
+        # ── Commit results to duplicate_smells list ───────────────────────
+        for smell in pending_smells:
+            key = smell.pop("_key")
+            smell["suggestion"] = sugg_map.get(
+                key,
+                "Refactor: Extract common logic into a shared utility method."
+            )
+            existing = next(
+                (i for i, s in enumerate(duplicate_smells)
+                 if s["file"] == file_path and s["function_name"] == smell["function_name"]),
+                -1
+            )
+            if existing >= 0:
+                duplicate_smells[existing] = smell
+            else:
+                duplicate_smells.append(smell)
+
+        logger.info(f"ML pipeline complete for {Path(file_path).name}.")
 
     threading.Thread(target=_run_ml_diagnostics, daemon=True).start()
 
@@ -389,32 +474,58 @@ def cmd_get_workspace_graph(ls: LanguageServer, args: list) -> dict:
     """
     Return the full dependency graph as a JSON-serialisable dict.
     Used by Phase 4 to render the reactflow visualization.
+    Schema-style: each node exposes its symbol list; each edge carries
+    the exact imported symbol names so the UI can draw column→column lines.
     """
     nodes = []
     edges = []
+    edge_id = 0
 
     all_roles = graph.all_roles()
+
+    # Build a stem→path lookup for fast resolution
+    stem_to_path: dict[str, str] = {}
+    for fpath in all_roles:
+        stem_to_path[Path(fpath).stem] = fpath
 
     for fpath, role in all_roles.items():
         nodes.append({
             "id": fpath,
             "label": Path(fpath).name,
             "role": role.role_label,
-            "symbols": role.exported_symbols,
+            "symbols": role.exported_symbols,          # defined symbols (output side)
+            "imports": role.imported_names,            # names this file pulls in (input side)
+            "imported_modules": role.imported_modules,
         })
 
     for fpath, role in all_roles.items():
         for mod in role.imported_modules:
-            # Find the physical file this module resolves to
-            for other_path in all_roles:
-                other_stem = Path(other_path).stem
-                if mod == other_stem or mod.endswith(f".{other_stem}"):
-                    edges.append({
-                        "source": fpath,
-                        "target": other_path,
-                        "label": f"imports {mod}",
-                    })
+            # Resolve module name → physical file
+            target_path: str | None = None
+            # Try full dotted tail first (e.g. "orders.checkout" → "checkout")
+            for part in reversed(mod.split(".")):
+                if part in stem_to_path:
+                    target_path = stem_to_path[part]
                     break
+
+            if not target_path or target_path == fpath:
+                continue
+
+            target_role = all_roles.get(target_path)
+            # Which symbols are actually imported from this module?
+            imported_here = [
+                n for n in role.imported_names
+                if target_role and n in target_role.exported_symbols
+            ]
+
+            edges.append({
+                "id": f"e{edge_id}",
+                "source": fpath,
+                "target": target_path,
+                "module": mod,
+                "imported_symbols": imported_here,   # the actual column links
+            })
+            edge_id += 1
 
     return {"nodes": nodes, "edges": edges}
 
@@ -427,14 +538,19 @@ def cmd_get_health_smells(ls: LanguageServer, args: list) -> dict:
     """
     dead_code_raw = graph.find_dead_code_in_workspace()
     
-    # Format dead code
+    # Format dead code — use AI cache if ready, smart static fallback otherwise
     dead_code_smells = []
     for dc in dead_code_raw:
+        ckey = f"{dc['file']}::{dc['symbol']}"
+        cached = ai_dead_code_cache.get(ckey, "")
+        # Skip stale placeholder strings
+        if not cached or cached == "__pending__":
+            cached = GeminiService._smart_dead_code_fallback(dc["symbol"])
         dead_code_smells.append({
             "type": "dead_code",
             "file": dc["file"],
             "function_name": dc["symbol"],
-            "suggestion": "Refactor: This symbol is exported but never imported across the workspace. Consider removing this dead code."
+            "suggestion": cached,
         })
         
     return {

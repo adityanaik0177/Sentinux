@@ -58,6 +58,13 @@ export default function App() {
           setHealthSmells(msg.payload)
           setHealthLoading(false)
           break
+        case 'error':
+          console.error('[Webview] Host Error:', msg.message)
+          setGraphLoading(false)
+          setHealthLoading(false)
+          // Optionally auto-populate with empty arrays so the UI shows 'Perfect Health' instead of spinning
+          if (!healthSmells) setHealthSmells({ dead_code: [], duplicates: [] })
+          break
       }
     }
     window.addEventListener('message', handler)
