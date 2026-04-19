@@ -1,6 +1,6 @@
 # canteen/menu.py
 
-class MenuItem:
+class Menu:
     def __init__(self, item_id: str, name: str, price: float):
         self.item_id = item_id
         self.name = name

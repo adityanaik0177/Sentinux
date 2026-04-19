@@ -1,6 +1,6 @@
 # canteen/payment.py
 import uuid
-from typing import List
+from typ import List
 from .menu import MenuItem
 
 def process_credit_card(amount: float) -> bool:

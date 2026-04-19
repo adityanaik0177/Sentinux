@@ -80,6 +80,14 @@ class WorkspaceGraph:
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=2)
 
+    def __len__(self) -> int:
+        """Return the number of nodes (files) in the graph."""
+        return len(self.nodes)
+
+    def __iter__(self):
+        """Iterate over nodes."""
+        return iter(self.nodes)
+
 
 # ---------------------------------------------------------------------------
 # Freshness Score Calculator
@@ -140,12 +148,15 @@ class FreshnessCalculator:
                 if name in producer_symbols:
                     matched += 1
                 else:
-                    logger.warning(
-                        "F-Score miss: '%s' not found in %s (imported by %s)",
-                        name,
-                        mod_stem,
-                        Path(file_path).name,
-                    )
+                    # Only warn if the producer has exports at all
+                    # (avoids noise for __init__.py-style re-export files)
+                    if producer_symbols:
+                        logger.debug(
+                            "F-Score miss: '%s' not found in %s (imported by %s)",
+                            name,
+                            mod_stem,
+                            Path(file_path).name,
+                        )
 
         if total_deps == 0:
             return 100.0

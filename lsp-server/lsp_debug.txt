@@ -4,7 +4,7 @@ SENT: {
   "id": 1,
   "method": "initialize",
   "params": {
-    "processId": 19112,
+    "processId": 27956,
     "rootUri": "file:///C:/Users/vedan/OneDrive/Desktop/Sentinux2/test-workspace",
     "capabilities": {}
   }
@@ -80,12 +80,6 @@ RECV: {
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
-        "function_name": "handle_migrate",
-        "suggestion": "Caution: `handle_migrate` may be infrastructure setup code. Verify it is truly unused before removing."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
         "function_name": "handle_add_to_cart",
         "suggestion": "Dead export: `handle_add_to_cart` is defined and exported but never imported. Delete if no external consumers exist."
       },
@@ -94,6 +88,12 @@ RECV: {
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
         "function_name": "handle_get_product",
         "suggestion": "Dead export: `handle_get_product` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\api.py",
+        "function_name": "handle_migrate",
+        "suggestion": "Caution: `handle_migrate` may be infrastructure setup code. Verify it is truly unused before removing."
       },
       {
         "type": "dead_code",
@@ -110,14 +110,14 @@ RECV: {
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\main.py",
-        "function_name": "run_system",
-        "suggestion": "Dead export: `run_system` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "print_final_bill",
+        "suggestion": "Dead export: `print_final_bill` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\main.py",
-        "function_name": "print_final_bill",
-        "suggestion": "Dead export: `print_final_bill` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "run_system",
+        "suggestion": "Dead export: `run_system` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
@@ -136,12 +136,6 @@ RECV: {
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\canteen\\payment.py",
         "function_name": "generate_customer_receipt",
         "suggestion": "Dead export: `generate_customer_receipt` is defined and exported but never imported. Delete if no external consumers exist."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
-        "function_name": "delete",
-        "suggestion": "Dead export: `delete` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
@@ -188,12 +182,6 @@ RECV: {
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
-        "function_name": "find_by_id",
-        "suggestion": "Dead export: `find_by_id` is defined and exported but never imported. Delete if no external consumers exist."
-      },
-      {
-        "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
         "function_name": "save",
         "suggestion": "Dead export: `save` is defined and exported but never imported. Delete if no external consumers exist."
       },
@@ -205,9 +193,15 @@ RECV: {
       },
       {
         "type": "dead_code",
-        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
         "function_name": "find_by_id",
         "suggestion": "Dead export: `find_by_id` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\database.py",
+        "function_name": "delete",
+        "suggestion": "Dead export: `delete` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
@@ -218,14 +212,14 @@ RECV: {
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
-        "function_name": "to_dict",
-        "suggestion": "Dead export: `to_dict` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "is_in_stock",
+        "suggestion": "Dead export: `is_in_stock` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
-        "function_name": "is_in_stock",
-        "suggestion": "Dead export: `is_in_stock` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "to_dict",
+        "suggestion": "Dead export: `to_dict` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
@@ -248,14 +242,20 @@ RECV: {
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
-        "function_name": "subtotal",
-        "suggestion": "Dead export: `subtotal` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "delete",
+        "suggestion": "Dead export: `delete` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
-        "function_name": "delete",
-        "suggestion": "Dead export: `delete` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "find_by_id",
+        "suggestion": "Dead export: `find_by_id` is defined and exported but never imported. Delete if no external consumers exist."
+      },
+      {
+        "type": "dead_code",
+        "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\models.py",
+        "function_name": "subtotal",
+        "suggestion": "Dead export: `subtotal` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
@@ -290,14 +290,14 @@ RECV: {
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\checkout.py",
-        "function_name": "express_checkout",
-        "suggestion": "Dead export: `express_checkout` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "checkout_flow",
+        "suggestion": "Dead export: `checkout_flow` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\checkout.py",
-        "function_name": "checkout_flow",
-        "suggestion": "Dead export: `checkout_flow` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "express_checkout",
+        "suggestion": "Dead export: `express_checkout` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
@@ -308,14 +308,14 @@ RECV: {
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\processor.py",
-        "function_name": "add_item",
-        "suggestion": "Dead export: `add_item` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "to_dict",
+        "suggestion": "Dead export: `to_dict` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",
         "file": "C:\\Users\\vedan\\OneDrive\\Desktop\\Sentinux2\\test-workspace\\orders\\processor.py",
-        "function_name": "to_dict",
-        "suggestion": "Dead export: `to_dict` is defined and exported but never imported. Delete if no external consumers exist."
+        "function_name": "add_item",
+        "suggestion": "Dead export: `add_item` is defined and exported but never imported. Delete if no external consumers exist."
       },
       {
         "type": "dead_code",

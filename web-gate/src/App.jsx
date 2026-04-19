@@ -26,13 +26,14 @@ export default function App() {
   const [pat, setPAT]                 = useState(null)
 
   useEffect(() => {
-    // If this is the OAuth callback, let Supabase handle the session exchange.
-    // It reads the URL fragment automatically via onAuthStateChange.
-    if (isAuthCallback()) {
-      // Clean URL so the token hash isn't visible / bookmarked
-      window.history.replaceState({}, document.title, window.location.pathname)
-    }
+    // Explicitly get the session — this triggers Supabase to exchange
+    // the access_token in the URL hash (from OAuth redirect) for a real session.
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
 
+    // Also listen for future auth state changes (sign in / sign out)
     const { data: { subscription } } = onAuthStateChange((authUser) => {
       setUser(authUser)
       setLoading(false)

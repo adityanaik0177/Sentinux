@@ -108,6 +108,42 @@ export default function PatDisplay({ user, mode, pat }) {
           </div>
         </div>
 
+        {/* ── install.md prerequisite notice ───────────────────────────── */}
+        <div style={{
+          background: 'rgba(255,200,0,0.05)',
+          border: '1px solid rgba(255,200,0,0.25)',
+          borderRadius: 10, padding: '1rem 1.1rem',
+          marginBottom: '1.25rem',
+          display: 'flex', gap: 12, alignItems: 'flex-start',
+        }}>
+          <span style={{ fontSize: '1.1rem', flexShrink: 0, marginTop: 1 }}>📋</span>
+          <div>
+            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: '#ffd666', marginBottom: '0.35rem' }}>
+              Before copying this token, follow the setup guide first!
+            </p>
+            <p style={{ fontSize: '0.77rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.6, marginBottom: '0.5rem' }}>
+              The extension requires Python, a virtual environment, and your{' '}
+              <code style={{ fontSize: '0.74rem', color: '#ffd666', background: 'rgba(255,200,0,0.1)', padding: '1px 5px', borderRadius: 4 }}>.env</code>{' '}
+              file to be configured before the token will work.
+            </p>
+            <a
+              href="https://github.com/adityanaik0177/Sentinux/blob/main/install.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                fontSize: '0.78rem', fontWeight: 600, color: '#ffd666',
+                textDecoration: 'none',
+                borderBottom: '1px solid rgba(255,200,0,0.35)',
+                paddingBottom: 1,
+                transition: 'color 0.2s',
+              }}
+            >
+              📖 Read install.md on GitHub →
+            </a>
+          </div>
+        </div>
+
         {/* Instructions */}
         <div style={{
           background: 'rgba(0,212,255,0.04)',
