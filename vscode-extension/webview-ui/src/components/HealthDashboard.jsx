@@ -1,5 +1,40 @@
-import { Activity, Copy, Check, Info } from 'lucide-react'
+import { Activity, Copy, Check, Info, FileCode } from 'lucide-react'
 import { useState } from 'react'
+
+// Send navigateTo message to VS Code extension host
+function navigateTo(file, line) {
+  try {
+    // acquireVsCodeApi is injected by the extension webview host
+    // eslint-disable-next-line no-undef
+    const vscode = acquireVsCodeApi()
+    vscode.postMessage({ type: 'navigateTo', file, line: line ?? 1 })
+  } catch {
+    // Not running inside VS Code (e.g. browser preview) — ignore
+  }
+}
+
+// Clickable file+function label that jumps to the exact line
+function NavLink({ file, line, children }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <span
+      title={`Open ${file} at line ${line}`}
+      onClick={() => navigateTo(file, line)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        cursor: 'pointer',
+        display: 'inline-flex', alignItems: 'center', gap: 4,
+        color: hovered ? 'var(--ns-cyan)' : 'var(--ns-text-primary)',
+        transition: 'color 0.15s',
+        wordBreak: 'break-all',
+      }}
+    >
+      <FileCode size={11} style={{ flexShrink: 0, opacity: 0.7 }} />
+      {children}
+    </span>
+  )
+}
 
 export default function HealthDashboard({ smells }) {
   const [copiedId, setCopiedId] = useState(null)
@@ -27,34 +62,21 @@ export default function HealthDashboard({ smells }) {
 
   const handleCopy = async (id, text) => {
     try {
-      if (typeof acquireVsCodeApi !== 'undefined') {
-         // Fallback via textarea if navigator.clipboard fails in webview
-         const ta = document.createElement('textarea')
-         ta.value = text
-         document.body.appendChild(ta)
-         ta.select()
-         document.execCommand('copy')
-         document.body.removeChild(ta)
-      } else {
-         await navigator.clipboard.writeText(text)
-      }
+      const ta = document.createElement('textarea')
+      ta.value = text
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
       setCopiedId(id)
       setTimeout(() => setCopiedId(null), 2000)
-    } catch {
-       const ta = document.createElement('textarea')
-       ta.value = text
-       document.body.appendChild(ta)
-       ta.select()
-       document.execCommand('copy')
-       document.body.removeChild(ta)
-       setCopiedId(id)
-       setTimeout(() => setCopiedId(null), 2000)
-    }
+    } catch {/* ignore */}
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 10 }}>
-      {/* Duplicates */}
+
+      {/* ── Duplicates ────────────────────────────────────────── */}
       {smells.duplicates?.map((dup, i) => {
         const id = `dup-${i}`
         return (
@@ -62,8 +84,18 @@ export default function HealthDashboard({ smells }) {
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
               <div>
                 <span className="ns-badge ns-badge-amber" style={{ marginBottom: 6 }}>Duplicate Logic</span>
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--ns-text-primary)', wordBreak: 'break-all' }}>
-                  {dup.function_name} <span style={{ color: 'var(--ns-text-dim)', fontWeight: 400 }}>in {dup.file.split(/[\\/]/).pop()}</span>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                  <NavLink file={dup.file} line={dup.line}>
+                    {dup.function_name}
+                  </NavLink>
+                  {' '}
+                  <span
+                    title={`Open ${dup.file}`}
+                    onClick={() => navigateTo(dup.file, dup.line)}
+                    style={{ color: 'var(--ns-text-dim)', fontWeight: 400, cursor: 'pointer' }}
+                  >
+                    in {dup.file.split(/[/\\]/).pop()}:{dup.line}
+                  </span>
                 </div>
               </div>
             </div>
@@ -76,8 +108,12 @@ export default function HealthDashboard({ smells }) {
               Matches found:
               <ul style={{ margin: '4px 0 0 0', paddingLeft: 16 }}>
                 {dup.duplicates.map((d, di) => (
-                  <li key={di} style={{ marginBottom: 2 }}>
-                    <code style={{ color: 'var(--ns-cyan)' }}>{d.function_name}</code> in {d.file_path.split(/[\\/]/).pop()}
+                  <li key={di} style={{ marginBottom: 2, cursor: 'pointer' }}
+                      onClick={() => navigateTo(d.file_path, 1)}
+                      title={`Open ${d.file_path}`}
+                  >
+                    <code style={{ color: 'var(--ns-cyan)' }}>{d.function_name}</code>
+                    {' '}in {d.file_path.split(/[/\\]/).pop()}
                   </li>
                 ))}
               </ul>
@@ -110,7 +146,7 @@ export default function HealthDashboard({ smells }) {
         )
       })}
 
-      {/* Dead Code */}
+      {/* ── Dead Code ─────────────────────────────────────────── */}
       {smells.dead_code?.map((dc, i) => {
         const id = `dc-${i}`
         return (
@@ -118,8 +154,18 @@ export default function HealthDashboard({ smells }) {
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
               <div>
                 <span className="ns-badge ns-badge-red" style={{ marginBottom: 6 }}>Dead Code</span>
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--ns-text-primary)', wordBreak: 'break-all' }}>
-                  {dc.function_name} <span style={{ color: 'var(--ns-text-dim)', fontWeight: 400 }}>in {dc.file.split(/[\\/]/).pop()}</span>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                  <NavLink file={dc.file} line={dc.line}>
+                    {dc.function_name}
+                  </NavLink>
+                  {' '}
+                  <span
+                    title={`Open ${dc.file}`}
+                    onClick={() => navigateTo(dc.file, dc.line)}
+                    style={{ color: 'var(--ns-text-dim)', fontWeight: 400, cursor: 'pointer' }}
+                  >
+                    in {dc.file.split(/[/\\]/).pop()}:{dc.line}
+                  </span>
                 </div>
               </div>
             </div>

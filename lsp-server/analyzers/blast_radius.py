@@ -44,6 +44,9 @@ class FileRole:
     # Store the actual bodies for AI smells
     symbol_bodies: dict[str, str] = field(default_factory=dict)
 
+    # Line number (1-based) where each symbol is defined — for navigation
+    symbol_lines: dict[str, int] = field(default_factory=dict)
+
     # Modules this file imports from → it is a Consumer
     imported_modules: list[str] = field(default_factory=list)
     
@@ -126,6 +129,7 @@ class DependencyGraph:
             file_path=fpath,
             exported_symbols=list(result.defined_symbols.keys()),
             symbol_bodies=result.defined_symbols,
+            symbol_lines=result.symbol_lines,
             imported_modules=[imp.module for imp in result.imports],
             imported_names=imported_names,
         )

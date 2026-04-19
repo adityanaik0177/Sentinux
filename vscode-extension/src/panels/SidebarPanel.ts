@@ -121,6 +121,30 @@ export class SidebarPanel implements vscode.WebviewViewProvider {
           }
           break
         }
+
+        case 'navigateTo': {
+          // message.file  — absolute path to the file
+          // message.line  — 1-based line number to jump to
+          const filePath: string = message.file
+          const line: number     = Math.max(0, (message.line ?? 1) - 1) // convert to 0-based
+
+          if (!filePath) return
+          try {
+            const uri = vscode.Uri.file(filePath)
+            const doc = await vscode.workspace.openTextDocument(uri)
+            await vscode.window.showTextDocument(doc, {
+              preview:    false,
+              viewColumn: vscode.ViewColumn.One,
+              selection:  new vscode.Range(
+                new vscode.Position(line, 0),
+                new vscode.Position(line, 0)
+              ),
+            })
+          } catch (err: any) {
+            vscode.window.showErrorMessage(`Nexus-Sentinel: Could not open file — ${err.message}`)
+          }
+          break
+        }
       }
     })
   }

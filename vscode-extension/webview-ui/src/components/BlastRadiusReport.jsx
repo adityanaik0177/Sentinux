@@ -11,6 +11,17 @@
 
 import { Zap, FileCode, ChevronRight, AlertTriangle, Info } from 'lucide-react'
 
+// Post navigateTo message to VS Code extension host
+function navigateTo(file, line = 1) {
+  try {
+    // eslint-disable-next-line no-undef
+    const vsc = typeof acquireVsCodeApi !== 'undefined' ? acquireVsCodeApi() : null
+    vsc?.postMessage({ type: 'navigateTo', file, line })
+  } catch {
+    // Not in VS Code webview — ignore
+  }
+}
+
 function RolePill({ role }) {
   const cfg = {
     'Producer':           { cls: 'ns-badge-cyan',   label: 'P' },
@@ -104,19 +115,25 @@ export default function BlastRadiusReport({ report }) {
         )}
 
         {consumers.map(([consumerPath, diagnostics], i) => {
-          const filename = consumerPath.split(/[\\/]/).pop()
+          const filename = consumerPath.split(/[\/\\]/).pop()
           const diag = diagnostics?.[0]
 
           return (
             <div
               key={consumerPath}
               className="ns-fade-in"
+              onClick={() => navigateTo(consumerPath, 1)}
+              title={`Open ${consumerPath}`}
               style={{
                 display: 'flex', alignItems: 'flex-start', gap: 10,
                 padding: '10px 14px',
                 borderBottom: i < consumers.length - 1 ? '1px solid var(--ns-border)' : 'none',
                 animationDelay: `${i * 0.05}s`,
+                cursor: 'pointer',
+                transition: 'background 0.15s',
               }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,212,255,0.04)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
               {/* Warning dot */}
               <div style={{
@@ -138,11 +155,12 @@ export default function BlastRadiusReport({ report }) {
               {/* Content */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-                  <FileCode size={11} color="var(--ns-text-dim)" />
+                  <FileCode size={11} color="var(--ns-cyan)" />
                   <span style={{
                     fontFamily: 'var(--ns-mono)', fontSize: '0.72rem',
-                    color: 'var(--ns-text)', fontWeight: 500,
+                    color: 'var(--ns-cyan)', fontWeight: 500,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    textDecoration: 'underline', textUnderlineOffset: 2,
                   }}>
                     {filename}
                   </span>

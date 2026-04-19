@@ -73,6 +73,8 @@ class ExtractionResult:
     # Top-level symbols defined in this file (functions + classes)
     # The dictionary maps symbol_name -> symbol_body_text
     defined_symbols: dict[str, str] = field(default_factory=dict)
+    # 1-based line number where each symbol is defined (for navigation)
+    symbol_lines: dict[str, int] = field(default_factory=dict)
     parse_error: Optional[str] = None
 
 
@@ -144,7 +146,7 @@ class ImportExtractor:
 
             result.imports += self._extract_bare_imports(root, file_path)
             result.imports += self._extract_from_imports(root, file_path)
-            result.defined_symbols = self._extract_definitions(root)
+            result.defined_symbols, result.symbol_lines = self._extract_definitions(root)
 
         except Exception as exc:
             logger.exception("tree-sitter parse error in %s", file_path)
@@ -242,28 +244,27 @@ class ImportExtractor:
 
         return list(aggregated.values())
 
-    def _extract_definitions(self, root: Node) -> dict[str, str]:
-        """Return a mapping of function/class names -> their full source code body."""
+    def _extract_definitions(self, root: Node) -> tuple[dict[str, str], dict[str, int]]:
+        """Return (name→body, name→line) for all function/class definitions."""
         caps = self._captures(self._q_defs, root)
         
-        # We need to map the name node to its corresponding body node.
-        # tree-sitter captures them in pairs if they are part of the same match.
         symbols: dict[str, str] = {}
-        
-        func_names = caps.get("func_name", [])
-        func_bodies = caps.get("func_body", [])
+        lines:   dict[str, int] = {}
+
+        func_names  = caps.get("func_name",  [])
+        func_bodies = caps.get("func_body",  [])
         for name_node, body_node in zip(func_names, func_bodies):
             if name_node.text and body_node.text:
                 name_str = name_node.text.decode("utf-8")
-                body_str = body_node.text.decode("utf-8")
-                symbols[name_str] = body_str
+                symbols[name_str] = body_node.text.decode("utf-8")
+                lines[name_str]   = name_node.start_point[0] + 1   # 1-based
 
-        class_names = caps.get("class_name", [])
-        class_bodies = caps.get("class_body", [])
+        class_names  = caps.get("class_name",  [])
+        class_bodies = caps.get("class_body",  [])
         for name_node, body_node in zip(class_names, class_bodies):
             if name_node.text and body_node.text:
                 name_str = name_node.text.decode("utf-8")
-                body_str = body_node.text.decode("utf-8")
-                symbols[name_str] = body_str
-                
-        return symbols
+                symbols[name_str] = body_node.text.decode("utf-8")
+                lines[name_str]   = name_node.start_point[0] + 1
+
+        return symbols, lines

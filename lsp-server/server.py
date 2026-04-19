@@ -546,16 +546,29 @@ def cmd_get_health_smells(ls: LanguageServer, args: list) -> dict:
         # Skip stale placeholder strings
         if not cached or cached == "__pending__":
             cached = GeminiService._smart_dead_code_fallback(dc["symbol"])
+
+        # Look up exact line number from stored FileRole for navigation
+        role = graph.get_role(dc["file"])
+        line = role.symbol_lines.get(dc["symbol"], 1) if role else 1
+
         dead_code_smells.append({
             "type": "dead_code",
             "file": dc["file"],
             "function_name": dc["symbol"],
+            "line": line,
             "suggestion": cached,
         })
-        
+
+    # Enrich duplicate smells with line numbers
+    enriched_dupes = []
+    for smell in duplicate_smells:
+        role = graph.get_role(smell.get("file", ""))
+        line = role.symbol_lines.get(smell.get("function_name", ""), 1) if role else 1
+        enriched_dupes.append({**smell, "line": line})
+
     return {
         "dead_code": dead_code_smells,
-        "duplicates": duplicate_smells
+        "duplicates": enriched_dupes,
     }
 
 
