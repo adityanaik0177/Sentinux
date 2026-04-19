@@ -10,17 +10,7 @@
  */
 
 import { Zap, FileCode, ChevronRight, AlertTriangle, Info } from 'lucide-react'
-
-// Post navigateTo message to VS Code extension host
-function navigateTo(file, line = 1) {
-  try {
-    // eslint-disable-next-line no-undef
-    const vsc = typeof acquireVsCodeApi !== 'undefined' ? acquireVsCodeApi() : null
-    vsc?.postMessage({ type: 'navigateTo', file, line })
-  } catch {
-    // Not in VS Code webview — ignore
-  }
-}
+import { navigateTo } from '../lib/vscode'
 
 function RolePill({ role }) {
   const cfg = {

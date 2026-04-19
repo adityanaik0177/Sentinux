@@ -1,17 +1,6 @@
 import { Activity, Copy, Check, Info, FileCode } from 'lucide-react'
 import { useState } from 'react'
-
-// Send navigateTo message to VS Code extension host
-function navigateTo(file, line) {
-  try {
-    // acquireVsCodeApi is injected by the extension webview host
-    // eslint-disable-next-line no-undef
-    const vscode = acquireVsCodeApi()
-    vscode.postMessage({ type: 'navigateTo', file, line: line ?? 1 })
-  } catch {
-    // Not running inside VS Code (e.g. browser preview) — ignore
-  }
-}
+import { navigateTo } from '../lib/vscode'
 
 // Clickable file+function label that jumps to the exact line
 function NavLink({ file, line, children }) {

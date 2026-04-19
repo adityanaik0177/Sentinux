@@ -5,16 +5,7 @@ import DependencyGraph from './components/DependencyGraph'
 import HealthDashboard from './components/HealthDashboard'
 import { Shield, GitBranch, Zap, Activity } from 'lucide-react'
 
-// acquireVsCodeApi is injected by VS Code into the webview global scope.
-// When running in a browser (dev mode), we fall back to a no-op stub.
-const vscode = (() => {
-  try {
-    // eslint-disable-next-line no-undef
-    return typeof acquireVsCodeApi !== 'undefined' ? acquireVsCodeApi() : null
-  } catch {
-    return null
-  }
-})()
+import vscode, { postMessage } from './lib/vscode'
 
 const TABS = [
   { id: 'pulse',  label: 'Pulse',  Icon: Zap },
@@ -41,11 +32,11 @@ export default function App() {
           setMode(msg.payload?.mode ?? 'guardian')
           setLspReady(true)
           // Auto-populate: request the workspace graph immediately
-          vscode?.postMessage({ type: 'requestGraph' })
+              vscode?.postMessage({ type: 'requestGraph' })
           // Also request blast radius for whatever file is active
-          vscode?.postMessage({ type: 'requestActiveFilePulse' })
+              vscode?.postMessage({ type: 'requestActiveFilePulse' })
           // Request health smells 
-          vscode?.postMessage({ type: 'requestHealthSmells' })
+              vscode?.postMessage({ type: 'requestHealthSmells' })
           break
         case 'blastRadiusReport':
           setBlastReport(msg.payload)
@@ -76,7 +67,7 @@ export default function App() {
   const requestGraph = useCallback(() => {
     setTab('graph')
     setGraphLoading(true)
-    vscode?.postMessage({ type: 'requestGraph' })
+        vscode?.postMessage({ type: 'requestGraph' })
   }, [])
 
   const requestHealth = useCallback(() => {
